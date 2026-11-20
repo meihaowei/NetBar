@@ -2,6 +2,10 @@
 
 All notable changes to NetBar are documented here.
 
+## 1.0.6 - 2026-11-20
+
+- Move the status display up by one more point.
+
 ## 1.0.5 - 2026-11-20
 
 - Move the status display up by one point.
