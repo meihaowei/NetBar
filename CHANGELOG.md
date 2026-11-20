@@ -2,6 +2,11 @@
 
 All notable changes to NetBar are documented here.
 
+## 1.0.3 - 2026-11-20
+
+- Vertically center the two-line status display.
+- Increase menu bar text size by one point.
+
 ## 1.0.2 - 2026-11-20
 
 - Show upload and download on separate lines with upload on top.

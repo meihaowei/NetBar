@@ -1,10 +1,56 @@
 import AppKit
 import Darwin
 
+private final class StatusView: NSView {
+    private let lineHeight: CGFloat = 10.5
+    private var topText = ""
+    private var bottomText = ""
+
+    override var isFlipped: Bool { true }
+
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        nil
+    }
+
+    func update(top: String, bottom: String) {
+        topText = top
+        bottomText = bottom
+        needsDisplay = true
+    }
+
+    override func draw(_ dirtyRect: NSRect) {
+        let font = NSFont.monospacedSystemFont(ofSize: 9.5, weight: .medium)
+        let paragraph = NSMutableParagraphStyle()
+        paragraph.alignment = .left
+        paragraph.minimumLineHeight = lineHeight
+        paragraph.maximumLineHeight = lineHeight
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: font,
+            .foregroundColor: NSColor.labelColor,
+            .paragraphStyle: paragraph,
+        ]
+
+        let blockHeight = lineHeight * 2
+        let top = floor((bounds.height - blockHeight) / 2) + 5
+        let lines = [topText, bottomText]
+        for (index, text) in lines.enumerated() {
+            let width = (text as NSString).size(withAttributes: attributes).width
+            let rect = NSRect(
+                x: floor((bounds.width - width) / 2),
+                y: top + CGFloat(index) * lineHeight,
+                width: ceil(width),
+                height: lineHeight
+            )
+            (text as NSString).draw(in: rect, withAttributes: attributes)
+        }
+    }
+}
+
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     private var timer: Timer?
+    private let statusView = StatusView()
     private var previousNetwork: (up: UInt64, down: UInt64, time: TimeInterval)?
     private var previousCPU: (busy: UInt64, total: UInt64)?
 
@@ -13,10 +59,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let memoryItem = NSMenuItem()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        statusItem.button?.font = .monospacedSystemFont(ofSize: 8.5, weight: .medium)
-        statusItem.button?.usesSingleLineMode = false
+        statusItem = NSStatusBar.system.statusItem(withLength: 94)
         statusItem.button?.toolTip = "NetBar：网速、CPU、内存"
+        statusItem.button?.addSubview(statusView)
+        statusView.translatesAutoresizingMaskIntoConstraints = false
+        if let button = statusItem.button {
+            NSLayoutConstraint.activate([
+                statusView.leadingAnchor.constraint(equalTo: button.leadingAnchor),
+                statusView.trailingAnchor.constraint(equalTo: button.trailingAnchor),
+                statusView.topAnchor.constraint(equalTo: button.topAnchor),
+                statusView.bottomAnchor.constraint(equalTo: button.bottomAnchor),
+            ])
+        }
 
         let menu = NSMenu()
         menu.autoenablesItems = false
@@ -63,17 +117,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let cpuField = String(format: "%3d%%", Int(cpu.rounded()))
         let memoryField = String(format: "%3d%%", Int(memory.percent.rounded()))
 
-        let paragraph = NSMutableParagraphStyle()
-        paragraph.alignment = .left
-        paragraph.minimumLineHeight = 9.5
-        paragraph.maximumLineHeight = 9.5
-        statusItem.button?.attributedTitle = NSAttributedString(
-            string: "↑\(upField)  \(cpuField)\n↓\(downField)  \(memoryField)",
-            attributes: [
-                .font: NSFont.monospacedSystemFont(ofSize: 8.5, weight: .medium),
-                .foregroundColor: NSColor.labelColor,
-                .paragraphStyle: paragraph,
-            ]
+        statusView.update(
+            top: "↑\(upField)  \(cpuField)",
+            bottom: "↓\(downField)  \(memoryField)"
         )
         statusItem.button?.toolTip = "下载 \(down)/s，上传 \(up)/s\nCPU \(Self.percent(cpu))\n内存 \(Self.size(memory.used)) / \(Self.size(memory.total))"
         speedItem.title = "网速    ↓ \(down)/s    ↑ \(up)/s"
