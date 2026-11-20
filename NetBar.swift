@@ -31,7 +31,7 @@ private final class StatusView: NSView {
         ]
 
         let blockHeight = lineHeight * 2
-        let top = floor((bounds.height - blockHeight) / 2) + 5
+        let top = floor((bounds.height - blockHeight) / 2) + 4
         let lines = [topText, bottomText]
         for (index, text) in lines.enumerated() {
             let width = (text as NSString).size(withAttributes: attributes).width
