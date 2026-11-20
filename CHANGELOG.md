@@ -2,6 +2,10 @@
 
 All notable changes to NetBar are documented here.
 
+## 1.0.4 - 2026-11-20
+
+- Increase the menu bar text size to 11 points.
+
 ## 1.0.3 - 2026-11-20
 
 - Vertically center the two-line status display.

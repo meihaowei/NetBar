@@ -19,7 +19,7 @@ private final class StatusView: NSView {
     }
 
     override func draw(_ dirtyRect: NSRect) {
-        let font = NSFont.monospacedSystemFont(ofSize: 9.5, weight: .medium)
+        let font = NSFont.monospacedSystemFont(ofSize: 11, weight: .medium)
         let paragraph = NSMutableParagraphStyle()
         paragraph.alignment = .left
         paragraph.minimumLineHeight = lineHeight
