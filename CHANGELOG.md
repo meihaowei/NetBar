@@ -2,6 +2,11 @@
 
 All notable changes to NetBar are documented here.
 
+## 1.0.2 - 2026-11-20
+
+- Show upload and download on separate lines with upload on top.
+- Reduce menu bar text size to fit the two-line layout.
+
 ## 1.0.1 - 2026-11-20
 
 - Keep menu bar fields at fixed character widths to prevent layout jitter.

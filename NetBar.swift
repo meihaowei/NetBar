@@ -14,7 +14,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        statusItem.button?.font = .monospacedSystemFont(ofSize: 11, weight: .medium)
+        statusItem.button?.font = .monospacedSystemFont(ofSize: 8.5, weight: .medium)
+        statusItem.button?.usesSingleLineMode = false
         statusItem.button?.toolTip = "NetBar：网速、CPU、内存"
 
         let menu = NSMenu()
@@ -62,7 +63,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let cpuField = String(format: "%3d%%", Int(cpu.rounded()))
         let memoryField = String(format: "%3d%%", Int(memory.percent.rounded()))
 
-        statusItem.button?.title = "↓\(downField) ↑\(upField)  \(cpuField) \(memoryField)"
+        let paragraph = NSMutableParagraphStyle()
+        paragraph.alignment = .left
+        paragraph.minimumLineHeight = 9.5
+        paragraph.maximumLineHeight = 9.5
+        statusItem.button?.attributedTitle = NSAttributedString(
+            string: "↑\(upField)  \(cpuField)\n↓\(downField)  \(memoryField)",
+            attributes: [
+                .font: NSFont.monospacedSystemFont(ofSize: 8.5, weight: .medium),
+                .foregroundColor: NSColor.labelColor,
+                .paragraphStyle: paragraph,
+            ]
+        )
         statusItem.button?.toolTip = "下载 \(down)/s，上传 \(up)/s\nCPU \(Self.percent(cpu))\n内存 \(Self.size(memory.used)) / \(Self.size(memory.total))"
         speedItem.title = "网速    ↓ \(down)/s    ↑ \(up)/s"
         cpuItem.title = "CPU     \(Self.percent(cpu))"

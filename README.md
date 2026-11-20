@@ -9,10 +9,12 @@ dependencies, analytics, or network requests.
 The menu bar title follows this order:
 
 ```text
-↓ download rate  ↑ upload rate  CPU%  memory%
+↑ upload rate    CPU%
+↓ download rate  memory%
 ```
 
-Click the title to view exact values. The menu also contains the quit command.
+Upload is always shown on the top line and download on the bottom line. Click
+the title to view exact values. The menu also contains the quit command.
 Statistics refresh once per second.
 
 ## Requirements
