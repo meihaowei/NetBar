@@ -14,7 +14,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        statusItem.button?.font = .monospacedDigitSystemFont(ofSize: 11, weight: .medium)
+        statusItem.button?.font = .monospacedSystemFont(ofSize: 11, weight: .medium)
         statusItem.button?.toolTip = "NetBar：网速、CPU、内存"
 
         let menu = NSMenu()
@@ -57,8 +57,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let memory = memoryUsage()
         let down = Self.rate(downRate)
         let up = Self.rate(upRate)
+        let downField = Self.pad(down, to: 5)
+        let upField = Self.pad(up, to: 5)
+        let cpuField = String(format: "%3d%%", Int(cpu.rounded()))
+        let memoryField = String(format: "%3d%%", Int(memory.percent.rounded()))
 
-        statusItem.button?.title = "↓\(down) ↑\(up)  \(Int(cpu.rounded()))% \(Int(memory.percent.rounded()))%"
+        statusItem.button?.title = "↓\(downField) ↑\(upField)  \(cpuField) \(memoryField)"
         statusItem.button?.toolTip = "下载 \(down)/s，上传 \(up)/s\nCPU \(Self.percent(cpu))\n内存 \(Self.size(memory.used)) / \(Self.size(memory.total))"
         speedItem.title = "网速    ↓ \(down)/s    ↑ \(up)/s"
         cpuItem.title = "CPU     \(Self.percent(cpu))"
@@ -163,6 +167,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if unit == 0 { return "\(Int(value))B" }
         let precision = value >= 100 ? 0 : (value >= 10 ? 1 : 2)
         return String(format: "%.\(precision)f%@", value, units[unit])
+    }
+
+    private static func pad(_ value: String, to width: Int) -> String {
+        String(repeating: " ", count: max(0, width - value.count)) + value
     }
 
     private static func size(_ bytes: UInt64) -> String {
