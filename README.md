@@ -1,40 +1,63 @@
 # NetBar
 
-A tiny native macOS menu bar monitor for network throughput, CPU usage, and
-memory usage. NetBar uses Apple system APIs and has no third-party
-dependencies, analytics, or network requests.
+**Network speed, CPU, and memory in one compact macOS menu bar item.**
 
-## Display
+[简体中文](README.zh-CN.md) · [Download preview](https://github.com/meihaowei/NetBar/releases/download/v1.0.6-local/NetBar-1.0.6-local.dmg) · [Source code](https://github.com/meihaowei/NetBar)
 
-The menu bar title follows this order:
+NetBar is a small native AppKit utility. It has no Dock icon, no account, no
+analytics, and no background network requests.
 
-```text
-↑ upload rate    CPU%
-↓ download rate  memory%
-```
+## What it looks like
 
-Upload is always shown on the top line and download on the bottom line. Click
-the title to view exact values. The menu also contains the quit command.
-Statistics refresh once per second.
+![NetBar in the macOS menu bar](docs/netbar-status.png)
 
-## Requirements
+The menu bar uses two compact rows:
+
+| Row | Left | Right |
+| --- | --- | --- |
+| Top | `↑` upload speed | CPU usage |
+| Bottom | `↓` download speed | Memory usage |
+
+The fields use fixed character widths, so the item does not jump sideways when
+numbers change. Network rates are updated once per second.
+
+Click the status item to see exact values:
+
+![NetBar detail menu](docs/netbar-menu.png)
+
+The menu shows the current download/upload rates, CPU percentage, used and
+total memory, and a quit command.
+
+## Install
+
+Requirements:
 
 - macOS 12 or later
 - Apple Silicon or Intel Mac
 
-The source is compatible with Swift 6 and is built with AppKit.
+1. Download the [current preview DMG](https://github.com/meihaowei/NetBar/releases/download/v1.0.6-local/NetBar-1.0.6-local.dmg).
+2. Open the DMG and drag `NetBar.app` into `Applications`.
+3. Launch NetBar from Applications. It immediately appears in the menu bar.
 
-## Local build
+> [!IMPORTANT]
+> The preview DMG is ad-hoc signed and has not been notarized by Apple. macOS
+> may block it on another computer. A trusted public build requires a Developer
+> ID signature and notarization.
 
-From this directory:
+## Build from source
+
+The project requires Swift 6, Xcode Command Line Tools, and the macOS SDK:
 
 ```sh
+git clone https://github.com/meihaowei/NetBar.git
+cd NetBar
 chmod +x scripts/release.sh
 ./scripts/release.sh --local
+open NetBar.app
 ```
 
-This creates a universal, ad-hoc signed app and a local ZIP. Ad-hoc builds are
-only suitable for local testing. Do not distribute them publicly.
+The local build is universal for Apple Silicon and Intel Macs. It is intended
+for development and testing.
 
 ## Public release
 
@@ -58,8 +81,6 @@ NOTARY_PROFILE="netbar-notary" \
 ```
 
 The release script runs Gatekeeper verification and writes a SHA-256 checksum.
-Before publishing, confirm that the app name and bundle identifier do not
-conflict with an existing product.
 
 ## Privacy
 
